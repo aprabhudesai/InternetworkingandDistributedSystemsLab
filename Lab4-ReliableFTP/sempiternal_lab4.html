@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.23/themes/base/jquery-ui.css" type="text/css" media="all" />
+			<link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+			<script src="http://code.jquery.com/ui/1.8.23/jquery-ui.min.js" type="text/javascript"></script>
+	<script type="text/javascript" >
+		$(document).ready(function() {
+			$("#project1").accordion({collapsible:true}, { active:false});
+	 	});	 	
+	</script>
+	<style type="text/css">
+		body{
+			background-image: -ms-linear-gradient(top left, #FFFFFF 0%, #D3D9D6 100%);
+			background-image: -moz-linear-gradient(top left, #FFFFFF 0%, #D3D9D6 100%);
+			background-image: -o-linear-gradient(top left, #FFFFFF 0%, #D3D9D6 100%);
+			background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0, #FFFFFF), color-stop(1, #D3D9D6));
+			background-image: -webkit-linear-gradient(top left, #FFFFFF 0%, #D3D9D6 100%);
+			background-image: linear-gradient(to bottom right, #FFFFFF 0%, #D3D9D6 100%);
+		}	
+		h1{
+			border-radius: 5px;
+			background-image: -ms-linear-gradient(bottom, #524949 0%, #040505 100%);
+			background-image: -moz-linear-gradient(bottom, #524949 0%, #040505 100%);
+			background-image: -o-linear-gradient(bottom, #524949 0%, #040505 100%);
+			background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #524949), color-stop(1, #040505));
+			background-image: -webkit-linear-gradient(bottom, #524949 0%, #040505 100%);
+			background-image: linear-gradient(to top, #524949 0%, #040505 100%);
+			color: #F8F8F8;
+		}
+		.centerText{
+			text-align: center;
+		}
+		.Three-Dee{
+			font-family: 'Helvetica Neue',Helvetica, sans-serif;
+			line-height: 1em;
+			color: #141214;
+			font-size: 30px;
+			text-shadow:0px 0px 0 rgb(-73,-75,-73), -1px -1px 0 rgb(-166,-168,-166),-2px -2px 1px rgba(0,0,0,0.05),-2px -2px 1px rgba(0,0,0,0.5),0px 0px 1px rgba(0,0,0,.2);
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<h1 class="centerText">CSCI 558L : Internetworking and Distributed Systems Laboratory</h1>
+	</div>
+	<div id="teamDetailsDiv" class="centerText">
+		<h2>Team <span style="font-style:italic;" class="Three-Dee">SEMPITERNAL</span></h2>
+		<p><strong>Members: </strong></p>
+		<p>Abhishek Prabhudesai (prabhude@usc.edu)</p>
+		<p>Aniket Zamwar (zamwar@usc.edu)</p>
+		<p>Abhiram Kalluru (kalluru@usc.edu)</p>
+		<p>Vishwanath Sungal (sungal@usc.edu)</p>
+	</div>
+	<div>
+		<h2>Projects</h2>
+	</div>	
+	<div id="project1">
+		<h3><a href="#" id="project1Link"><strong>Project 1: Reliable File Transfer Protocol</strong></a></h3>
+		<div id="project1Details">
+			
+				<p><strong>Problem Statement:</strong></p>
+				<p>				
+					TCP, while totally reliable and robust, doesn't always give us good
+					throughput. Thus we will design a IP based file-transfer utility. The design and
+					implementation of the utility must full-fill only three
+					requirements: it must use IP (so it can be routed), it must transfer the file reliably (with no
+					errors) and it must be implemented with a command-line interface similar to scp. The link
+					speed between the sender and receiver must be 100Mbps and the test file size must be at least
+					1GBytes. You should emulate the delay and the loss rate of the link using the delay node.
+					You should test your system under various different conditions. However two settings that
+					you must expose your system for the assignment are:<br>
+					- The Delay (RTT) of 10ms with the Loss rate of 1%<br>
+					- The Delay (RTT) of 200ms with the Loss rate of 20%
+				</p>
+				<p><strong>Application Design:</strong></p>
+				<p><strong>Sender</strong></p>
+				<img src="https://lh5.googleusercontent.com/-ikBBvYNw4vc/UGKVWub8MwI/AAAAAAAAAE8/pP3-F95c02g/s652/sender.png" alt="" >
+				<br>
+				<p><strong>Receiver</strong></p>
+				<img src="https://lh3.googleusercontent.com/-Vz_vREufdik/UGKVTqpWFQI/AAAAAAAAAE0/GXN9ggrWzmk/s676/receiver.png" alt="" >				
+				<p><strong>Implementation Details:</strong></p>
+				<p><strong>Sender:</strong></p>
+				<p>
+					The sender is implemented as a multi-threaded application. It has the following threads:
+					<br>
+					- <span style="font-style:italic;">Packet Sender Thread : </span>Responsible for sending packets. It uses a WINDOW to make sure that it does not overwhelm
+					the receiver with too many packets. The reason to so this is to make sure that packets are not dropped if the receiver
+					is slow in processing them.
+					<br>
+					- <span style="font-style:italic;">Ack Receiver Thread : </span>Responsible for accepting Acks from the receiver. The acks are cumulative so it needs to
+					process the packets and mark the packets as acked to avoid resending.
+					<br>
+					- <span style="font-style:italic;">Re-Sender Thread : </span>Responsible for resending the unacked packets. This thread is informed by the Timer thread of
+					the packets that are expired and not acked by receiver.
+					<br>
+					- <span style="font-style:italic;">Timer Thread : </span>Responsible for checking if there are any unacked packets that have expired. It wakes up after a 
+					fixed time interval and checks for these messages. It then informs the re-sender thread of the expired, unacked packets.
+					<br><br>
+					The sender uses a Window to control the number of packets that are sent. The re-sender does not use window but re-sends
+					all the packets that it needs to send. The resender thread is a separate thread as this helps in sending the out of order
+					packets to the receiver much earlier. This avoids a lot of resends.
+				</p>
+				<p><strong>Receiver:</strong></p>
+				<p>
+					The receiver is implemented as a multi-threaded application. It has the following threads: 
+					<br>
+					- <span style="font-style:italic;">Packet Receiver Thread : </span>Responsible of receiving raw packets and handing it over to processor thread for processing.
+					<br>				
+					- <span style="font-style:italic;">Processor Thread : </span>Responsible for parsing the received message and handing it over to the file writer thread.
+					<br>				
+					- <span style="font-style:italic;">File Writer Thread : </span>Responsible for wirting to the file.
+					<br>				
+					- <span style="font-style:italic;">Ack Sender Thread : </span>Responsible for sending acks to the sender for the sequence numbers received.
+					<br><br>
+					We have implemented a cumulative acknowledgement scheme where the Ack sender thread will send acknowledgement
+					of many sequence numbers in one Ack packet. The acks are sent for the packets received. Once a packet is received, its
+					sequence number is stored so that if the receiver gets a duplicate packet, it is not written to the file again thus
+					saving I/O cycles. The file writing is done by a separate thread, thus the data can be written while new packets are
+				received.
+				</p>
+				<p><strong>Performance Numbers:</strong></p>
+				<p>
+					<table border="1" cellpadding="10" class="centerText">
+						<tr>
+							<th>Delay (ms)
+							</th>
+							<th>Loss (%)
+							</th>
+							<th>Throughput (Mbps)
+							</th>
+						</tr>
+						<tr>
+							<td>0</td>
+							<td>0</td>
+							<td>63.55</td>
+						</tr>
+						<tr>
+							<td>0</td>
+							<td>10</td>
+							<td>60.72</td>
+						</tr>
+						<tr>
+							<td>0</td>
+							<td>20</td>
+							<td>59.91</td>
+						</tr>
+						<tr>
+							<td>20</td>
+							<td>20</td>
+							<td>59.04</td>
+						</tr>
+						<tr>
+							<td>200</td>
+							<td>0</td>
+							<td>57.45</td>
+						</tr>
+						<tr>
+							<td>200</td>
+							<td>10</td>
+							<td>55.92</td>
+						</tr>
+						<tr>
+							<td>200</td>
+							<td>20</td>
+							<td>54.47</td>
+						</tr>
+					</table>
+				</p>
+				<p><a href="readme.txt" >How To Complie &amp; Run</a></p>
+		</div>
+	</div>
+</body>
+</html>

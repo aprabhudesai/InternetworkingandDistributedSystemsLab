@@ -1,0 +1,27 @@
+{
+	"TestFile" : "/users/sc558bt/cs558l/testdata/data1G.bin",
+	"ServerAddr" : "node0.tdemo.USC558L",
+	"ServerNodeAddr" : "node0",
+	"Client1Addr" : "node1.tdemo.USC558L",
+	"Client2Addr" : "node2.tdemo.USC558L",
+	"ServPort1" : 123455,
+	"ServPort2" : 123456,
+	"teams" : [ { "Name" : "Sempiternal",
+				  "ServerDataDir" :" /users/sc558bt/cs558l/testdata/app1/server",
+				  "ServerPreStartCmd" : "ServerPreStart1.sh",
+				  "ServerStartCmd" : "ServerStart1.sh",
+				  "ClientDataDir" :" /users/sc558bt/cs558l/testdata/app1/client",
+				  "ClientPreStartCmd" : "ClientPreStart1.sh" ,
+				  "ClientStartCmd" : "ClientStart1.sh" },
+
+		        { "Name" : "Sempiternal",
+				  "ServerDataDir" :" /users/sc558bt/cs558l/testdata/app2/server",
+				  "ServerPreStartCmd" : "ServerPreStart1.sh",
+				  "ServerStartCmd" : "ServerStart1.sh",
+				  "ClientDataDir" :" /users/sc558bt/cs558l/testdata/app2/client",
+				  "ClientPreStartCmd" : "ClientPreStart1.sh" ,
+				  "ClientStartCmd" : "ClientStart1.sh"}
+		      ]
+		      
+}
+
